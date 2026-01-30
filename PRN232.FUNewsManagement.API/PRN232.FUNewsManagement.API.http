@@ -1,0 +1,6 @@
+@FUNewsManagementSystemControllerv2_HostAddress = http://localhost:5267
+
+GET {{FUNewsManagementSystemControllerv2_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
