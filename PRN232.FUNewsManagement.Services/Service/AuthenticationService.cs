@@ -8,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PRN232.FUNewsManagement.Services.DTO.Request;
+using PRN232.FUNewsManagement.Services.Utility.CustomException;
+using PRN232.FUNewsManagement.Repo.Enum;
 using System.Threading.Tasks;
 
 namespace PRN232.FUNewsManagement.Services.Service
@@ -59,6 +62,24 @@ namespace PRN232.FUNewsManagement.Services.Service
 			result.StatusCode = APIStatusCode.Success.GetHashCode();
 
 			return result;
+
 		}
+
+        public async Task Register(RegisterRequestDTO request)
+        {
+            var existingAccount = await _accountRepository.FirstOrDefaultAsync(x => x.AccountEmail == request.AccountEmail);
+            if (existingAccount != null)
+            {
+                throw new BadRequestException("Email already exists.");
+            }
+            var account = _mapper.Map<SystemAccount>(request);
+
+            account.AccountPassword = BCrypt.Net.BCrypt.HashPassword(request.AccountPassword);
+			account.AccountRole = 3;
+			account.AccountStatus = Status.Active.ToString();
+
+            await _accountRepository.AddAsync(account);
+            await _accountRepository.SaveChangesAsync();
+        }
 	}
 }

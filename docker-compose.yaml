@@ -31,9 +31,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnectionString=Server=sqlserver;Database=FUNewsManagementV3;User Id=sa;Password=Pwd@12345#;TrustServerCertificate=True;
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
-      - "5000:80"
+      - "5267:80"
     depends_on:
       sqlserver:
         condition: service_healthy

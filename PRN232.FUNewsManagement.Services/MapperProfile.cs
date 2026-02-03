@@ -33,6 +33,8 @@ namespace PRN232.FUNewsManagement.Services
 			CreateMap<SystemAccount, ViewAccountDTO>();
 			CreateMap<UpdateAccountDTO, SystemAccount>();
 			CreateMap<CreateAccountDTO, SystemAccount>();
+            CreateMap<RegisterRequestDTO, SystemAccount>();
+
 
 
 			//Comment

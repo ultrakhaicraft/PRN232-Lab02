@@ -4,9 +4,12 @@ using PRN232.FUNewsManagement.Services.DTO;
 using PRN232.FUNewsManagement.Services.DTO.Request;
 using PRN232.FUNewsManagement.Services.DTO.Response;
 using PRN232.FUNewsManagement.Services.Interface;
+using PRN232.FUNewsManagement.Services.Utility.CustomException;
 
 namespace PRN232.FUNewsManagement.API.Controllers
 {
+	[ApiController]
+	[Route("api/auth")]
 	public class AuthenticationController : ControllerBase
 	{
 
@@ -18,10 +21,10 @@ namespace PRN232.FUNewsManagement.API.Controllers
 		}
 
 		[HttpPost("login")]
-		public IActionResult Login([FromBody] LoginRequestDTO loginRequest)
+		public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequest)
 		{
 
-			LoginResponseDTO result = _authenticationService.ValidateUserCredentials(loginRequest.AccountEmail, loginRequest.AccountPassword).Result;
+			LoginResponseDTO result = await _authenticationService.ValidateUserCredentials(loginRequest.AccountEmail, loginRequest.AccountPassword);
 
 			//Success response
 			if (result.Success)
@@ -47,5 +50,27 @@ namespace PRN232.FUNewsManagement.API.Controllers
 
 
 		}
+
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDTO registerRequest)
+        {
+            try
+            {
+                await _authenticationService.Register(registerRequest);
+                var response = APIResponse<string>.SuccessResponse(null, "Registration successful");
+                return Ok(response);
+            }
+            catch (BadRequestException ex)
+            {
+                var response = APIResponse<string>.ErrorResponse(ex.Message, 400);
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                var response = APIResponse<string>.ErrorResponse(ex.Message, 500);
+                return StatusCode(500, response);
+            }
+        }
 	}
 }
